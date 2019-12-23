@@ -1,82 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{D3E91D30-5B24-4743-BBE6-2EC62D7A2629}</ProjectGuid>
+    <TargetFramework>net471</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>UnityDebug</RootNamespace>
     <AssemblyName>UnityDebug</AssemblyName>
-      <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Version>0.5.1</Version>
+    <Description>Unity debug adapter for Visual Studio Code</Description>
+    <Company>Unity Technologies</Company>
+    <Copyright>Unity Technologies</Copyright>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <ConsolePause>false</ConsolePause>
-    <Commandlineparameters>--unity-debug-extra-logging</Commandlineparameters>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\bin\</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\External\atk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="CorApi, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f">
-      <HintPath>..\External\CorApi.dll</HintPath>
-    </Reference>
-    <Reference Include="CorApi2, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f">
-      <HintPath>..\External\CorApi2.dll</HintPath>
-    </Reference>
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\External\gdk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\External\glib-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\External\gtk-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Addins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <HintPath>..\External\Mono.Addins.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cairo, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <HintPath>..\External\Mono.Cairo.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Posix, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <HintPath>..\External\Mono.Posix.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\External\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <HintPath>..\External\pango-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Messaging, Version=1.4.0.3, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <HintPath>..\External\SyntaxTree.VisualStudio.Unity.Messaging.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Composition.Convention, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\External\System.Composition.Convention.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\External\System.Security.Cryptography.Algorithms.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.1"></PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\MonoDebug\src\DebugSession.cs">
@@ -97,12 +33,6 @@
       <Compile Include="..\MonoDevelop.Debugger.Soft.Unity\UnityDebuggerSession.cs">
           <Link>MonoDevelop.Debugger.Soft.Unity\UnityDebuggerSession.cs</Link>
       </Compile>
-      <Compile Include="..\MonoDevelop.Debugger.Soft.Unity\UnityDebuggerStartInfo.cs">
-          <Link>MonoDevelop.Debugger.Soft.Unity\UnityDebuggerStartInfo.cs</Link>
-      </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnityDebugSession.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="..\MonoDevelop.Debugger.Soft.Unity\PlayerConnection.cs">
       <Link>MonoDevelop.Debugger.Soft.Unity\PlayerConnection.cs</Link>
     </Compile>
@@ -112,32 +42,18 @@
     <Compile Include="..\MonoDevelop.Debugger.Soft.Unity\UnityProcessInfo.cs">
       <Link>MonoDevelop.Debugger.Soft.Unity\UnityProcessInfo.cs</Link>
     </Compile>
-    <Compile Include="UnityAttach.cs" />
     <Compile Include="..\MonoDevelop.Debugger.Soft.Unity\UnityAttachInfo.cs">
       <Link>MonoDevelop.Debugger.Soft.Unity\UnityAttachInfo.cs</Link>
     </Compile>
-    <Compile Include="Log.cs" />
     <Compile Include="..\MonoDevelop.Debugger.Soft.Unity\iOSOverUsbSupport.cs">
       <Link>MonoDevelop.Debugger.Soft.Unity\iOSOverUsbSupport.cs</Link>
     </Compile>
     <Compile Include="..\MonoDevelop.Debugger.Soft.Unity\Log.cs">
       <Link>MonoDevelop.Debugger.Soft.Unity\Log.cs</Link>
     </Compile>
-    <Compile Include="Platform.cs" />
-    <Compile Include="Util.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\debugger-libs\Mono.Debugging.Soft\Mono.Debugging.Soft.csproj">
-            <Project>{de40756e-57f6-4af2-b155-55e3a88cced8}</Project>
-            <Name>Mono.Debugging.Soft</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\debugger-libs\Mono.Debugging\Mono.Debugging.csproj">
-            <Project>{90c99adb-7d4b-4eb4-98c2-40bd1b14c7d2}</Project>
-            <Name>Mono.Debugging</Name>
-        </ProjectReference>
+      <ProjectReference Include="../debugger-libs/Mono.Debugger.Soft/Mono.Debugger.Soft.csproj" />
+      <ProjectReference Include="../debugger-libs/Mono.Debugging.Soft/Mono.Debugging.Soft.csproj" />
     </ItemGroup>
 </Project>
