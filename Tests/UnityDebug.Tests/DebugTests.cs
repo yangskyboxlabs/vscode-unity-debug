@@ -80,7 +80,7 @@ namespace VSCode.UnityDebug.Tests
 		protected string TargetProjectSourceDir
 		{
 			get {
-				string path = Directory.GetParent(Path.GetDirectoryName (GetType ().Assembly.Location)).Parent.Parent.FullName;
+				string path = Directory.GetParent(Path.GetDirectoryName (GetType ().Assembly.Location)).Parent.Parent.Parent.FullName;
 				return Path.Combine(path, TestAppProjectDirName);
 			}
 		}
@@ -108,13 +108,9 @@ namespace VSCode.UnityDebug.Tests
 			return new TextFile(MDTextFile.ReadFile (sourcePath));
 		}
 
-		string m_MonoPath = "";
-
 		[OneTimeSetUp]
 		public virtual void SetUp()
 		{
-			m_MonoPath = Environment.GetEnvironmentVariable("MONO_PATH");
-			Environment.SetEnvironmentVariable("MONO_PATH", @"C:\projects\mono\mono\build\builds\monodistribution\lib\mono\4.5");
 		}
 
 		[OneTimeTearDown]
@@ -126,7 +122,6 @@ namespace VSCode.UnityDebug.Tests
 				Session.Dispose ();
 				Session = null;
 			}
-			Environment.SetEnvironmentVariable("MONO_PATH", m_MonoPath);
 		}
 
 		partial void TearDownPartial ();
@@ -146,13 +141,33 @@ namespace VSCode.UnityDebug.Tests
 			//var dsi = CreateStartInfo (test, EngineId);
 
 			var assemblyName = AssemblyName.GetAssemblyName (TargetExePath);
-			var soft = new SoftDebuggerStartInfo(null, new Dictionary<string, string>())
+			var environment = new Dictionary<string, string> ();
+
+			var soft = new SoftDebuggerStartInfo(null, environment)
 			{
 				Command = TargetExePath,
 				Arguments = test,
 				UserAssemblyNames = new List<AssemblyName> { assemblyName },
 			};
-			((SoftDebuggerLaunchArgs)soft.StartArgs).MonoExecutableFileName = @"C:\projects\mono\mono\build\builds\monodistribution\bin-x64\mono.exe";
+
+			var unityPath = Environment.GetEnvironmentVariable("UNITY_PATH");
+			var monoPath = Environment.GetEnvironmentVariable("MONO_PATH");
+			if (unityPath == null && monoPath == null) {
+				throw new Exception("One of UNITY_PATH or MONO_PATH environemnt variable must be set");
+			}
+
+			string monoExecPath;
+
+			if (unityPath != null) {
+				monoPath = Path.Combine(unityPath, "Editor", "Data", "MonoBleedingEdge", "lib", "mono", "4.7.1-api");
+				monoExecPath = Path.Combine(unityPath, "Editor", "Data", "MonoBleedingEdge", "bin", "mono.exe");
+			}
+			else {
+				monoExecPath = Path.Combine(monoPath, "..", "..", "bin-x64", "mono.exe");
+			}
+
+			((SoftDebuggerLaunchArgs)soft.StartArgs).MonoExecutableFileName = monoExecPath;
+			environment["MONO_PATH"] = monoPath;
 
 			if (soft != null) {
 			}
