@@ -104,6 +104,11 @@ function startSession(context: ExtensionContext, config: any) {
     if (process.platform !== 'win32')
         execCommand = "mono ";
     exec(execCommand + context.extensionPath + "/bin/UnityDebug.exe list", function (error, stdout, stderr) {
+        if (error) {
+            window.showErrorMessage("Error while looking for Unity processes: " + error.message);
+            return;
+        }
+
         const processes = [];
         const lines = stdout.split("\n");
         for (let i = 0; i < lines.length; i++) {
