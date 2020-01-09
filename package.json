@@ -124,8 +124,56 @@
                 "description": "Used for attaching to Unity Editor when multiple instances are running"
               }
             }
+          },
+          "attach": {
+            "properties": {
+              "projectRoot": {
+                "type": "string",
+                "description": "Unity project root folder",
+                "default": "${workspaceFolder}"
+              },
+              "platform": {
+                "type": "string",
+                "description": "Target Unity Player platform or editor",
+                "enum": [ "editor", "standalone" ],
+                "enumDescriptions": [
+                  "Unity Editor",
+                  "Standalone (PC, Mac, or Linux)"
+                ],
+                "default": "editor"
+              },
+              "port": {
+                "type": "number",
+                "description": "Specific port to attempt SDB connection to"
+              },
+              "address": {
+                "type": "string",
+                "description": "Specific address to attempt SDB connection to; defaults to 127.0.0.1",
+                "default": "127.0.0.1"
+              }
+            }
           }
-        }
+        },
+        "initialConfigurations": [
+          {
+            "type": "unity",
+            "name": "Editor",
+            "request": "attach",
+            "platform": "editor"
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "Unity: Attach to Editor",
+            "description": "Attach to the editor currently open for this workspace",
+            "body": {
+              "type": "unity",
+              "name": "Editor",
+              "request": "attach",
+              "platform": "editor"
+            }
+          }
+        ]
       }
     ]
   }
