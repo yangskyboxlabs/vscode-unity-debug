@@ -243,7 +243,7 @@ namespace UnityDebug
                 supportsSetVariable = true,
 
                 // This debug adapter does not support exception breakpoint filters
-                exceptionBreakpointFilters = new ExceptionBreakpointsFilter[0]
+                exceptionBreakpointFilters = null,
             });
 
             // Mono Debug is ready to accept breakpoints immediately
