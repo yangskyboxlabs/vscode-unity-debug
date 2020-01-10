@@ -48,7 +48,9 @@
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "activationEvents": [
-    "*"
+    "workspaceContains:Library/EditorInstance.json",
+    "workspaceContains:ProjectSettings/ProjectSettings.asset",
+    "onDebug"
   ],
   "contributes": {
     "breakpoints": [
