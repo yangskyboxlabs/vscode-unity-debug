@@ -1,10 +1,11 @@
 {
   "name": "unity-debug",
-  "displayName": "Debugger for Unity",
+  "displayName": "Debugger for Unity (SkyBox Labs)",
   "version": "3.0.0",
-  "publisher": "Unity",
-  "description": "Unity debugger extension",
+  "publisher": "skyboxlabs",
+  "description": "Unity debugger extension with modifications by SkyBox Labs",
   "license": "MIT",
+  "preview": true,
   "engines": {
     "vscode": "^1.32.3"
   },
@@ -32,11 +33,11 @@
   ],
   "homepage": "https://github.com/Unity-Technologies/vscode-unity-debug",
   "bugs": {
-    "url": "https://github.com/Unity-Technologies/vscode-unity-debug/issues"
+    "url": "https://github.com/SkyboxLabs/vscode-unity-debug/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Unity-Technologies/vscode-unity-debug.git"
+    "url": "https://github.com/SkyboxLabs/vscode-unity-debug.git"
   },
   "icon": "Images/dark/Unity.png",
   "main": "./out/attach.js",

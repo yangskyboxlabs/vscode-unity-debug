@@ -6,7 +6,7 @@
 	url = https://github.com/Unity-Technologies/MonoDevelop.Debugger.Soft.Unity
 [submodule "debugger-libs"]
 	path = debugger-libs
-	url = https://github.com/Unity-Technologies/debugger-libs.git
+	url = ../mono-debugger-libs.git
 [submodule "External/cecil"]
 	path = External/cecil
 	url = https://github.com/jbevain/cecil.git
