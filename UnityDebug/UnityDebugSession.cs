@@ -329,6 +329,36 @@ namespace UnityDebug
                         return;
                     }
                     break;
+                case "android":
+                    if (port == 0) {
+                        var targetType = AndroidConnectionTarget.Any;
+                        switch ((string)args.android?.connection) {
+                            case "usb":
+                                targetType = AndroidConnectionTarget.Usb;
+                                break;
+                            case "ip":
+                                targetType = AndroidConnectionTarget.Ip;
+                                break;
+                        }
+
+                        var env = ((JObject)args.env)?.ToObject<Dictionary<string, string>>();
+                        var adb = AndroidDebugBridge.GetAndroidDebugBridge(targetType, env);
+
+                        if (adb == null) {
+                            SendOutput("stdout", $"UnityDebug: Could not locate adb. Make sure adb is available via PATH or set ANDROID_SDK_ROOT environment variable.");
+                            this.SendErrorResponse(response, 100, "Could not find adb");
+                            return;
+                        }
+
+                        if (!adb.TryPrepareConnection(out port, out var error)) {
+                            SendOutput("stdout", $"UnityDebug: Could not establish device connection using adb: {error}");
+                            this.SendErrorResponse(response, 101, "Could not connect to unity: {error}", new {
+                                error = error
+                            });
+                            return;
+                        }
+                    }
+                    break;
             }
 
             Log.Write($"UnityDebug: Attempting SDB connection to {address}:{port}");

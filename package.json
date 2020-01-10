@@ -135,10 +135,11 @@
               "platform": {
                 "type": "string",
                 "description": "Target Unity Player platform or editor",
-                "enum": [ "editor", "standalone" ],
+                "enum": [ "editor", "standalone", "android" ],
                 "enumDescriptions": [
                   "Unity Editor",
-                  "Standalone (PC, Mac, or Linux)"
+                  "Standalone (PC, Mac, or Linux)",
+                  "Android"
                 ],
                 "default": "editor"
               },
@@ -150,6 +151,31 @@
                 "type": "string",
                 "description": "Specific address to attempt SDB connection to; defaults to 127.0.0.1",
                 "default": "127.0.0.1"
+              },
+              "android": {
+                "type": "object",
+                "description": "Android specific configuration",
+                "properties": {
+                  "connection": {
+                    "type": "string",
+                    "description": "The connection type to use when looking for Android devices; leave unset for auto-detection",
+                    "enum": [ "any", "usb", "ip" ],
+                    "enumDescriptions": [
+                      "Any connected device, including Android Emulator",
+                      "USB connected Android device",
+                      "TCP/IP connected Android device, including Android Emulator"
+                    ]
+                  }
+                }
+              },
+              "env": {
+                "type": "object",
+                "description": "Environment variables to use when locating and running external tools (e.g.: adb)",
+                "properties": {
+                  "ANDROID_SDK_ROOT": { "type": "string" },
+                  "ANDROID_SERIAL": { "type": "string" }
+                },
+                "additionalProperties": { "type": "string" }
               }
             }
           }
@@ -171,6 +197,32 @@
               "name": "Editor",
               "request": "attach",
               "platform": "editor"
+            }
+          },
+          {
+            "label": "Unity: Attach to Android Emulator",
+            "description": "Attach to Unity player running on the first Android Emulator instance",
+            "body": {
+              "type": "unity",
+              "name": "Android Emulator",
+              "request": "attach",
+              "platform": "android",
+              "env": {
+                "ANDROID_SERIAL": "emulator-5554"
+              }
+            }
+          },
+          {
+            "label": "Unity: Attach to Android device",
+            "description": "Attach to Unity player running a USB connected Android device",
+            "body": {
+              "type": "unity",
+              "name": "Android (USB)",
+              "request": "attach",
+              "platform": "android",
+              "android": {
+                "connection": "usb"
+              }
             }
           }
         ]
