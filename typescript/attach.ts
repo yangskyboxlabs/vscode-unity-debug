@@ -43,6 +43,11 @@ class UnityDebugConfigurationProvider implements DebugConfigurationProvider {
         if (debugConfiguration && !debugConfiguration.__exceptionOptions) {
             debugConfiguration.__exceptionOptions = exceptions.convertToExceptionOptionsDefault();
         }
+
+        if (!debugConfiguration.projectRoot && debugConfiguration.platform) {
+            debugConfiguration.projectRoot = "${workspaceFolder}";
+        }
+
 		return debugConfiguration;
 	}
 }
