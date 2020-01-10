@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using Mono.Debugging.Client;
 using Mono.Debugging.Soft;
@@ -262,6 +263,12 @@ namespace UnityDebug
 
             SetExceptionBreakpoints(args.__exceptionOptions);
 
+            // Use new attachment flow if we see a configuration that lets us do so
+            if (args.port != null || args.projectRoot != null || args.platform != null) {
+                this.Attach((string)args.projectRoot, response, args);
+                return;
+            }
+
             Log.Write($"UnityDebug: Searching for Unity process '{name}'");
             SendOutput("stdout", "UnityDebug: Searching for Unity process '" + name + "'");
 
@@ -307,6 +314,92 @@ namespace UnityDebug
             Log.Write($"UnityDebug: Attached to Unity process '{process.Name}' ({process.Id})");
             SendOutput("stdout", "UnityDebug: Attached to Unity process '" + process.Name + "' (" + process.Id + ")\n");
             SendResponse(response);
+        }
+
+        private void Attach(string projectRoot, Response response, dynamic args)
+        {
+            string platform = args.platform;
+            string address = args.address ?? "127.0.0.1";
+            int port = args.port ?? 0;
+
+            switch (platform) {
+                case null:
+                case "editor":
+                    if (!this.TryGetEditorDebugPort(projectRoot, out port)) {
+                        return;
+                    }
+                    break;
+                case "android":
+                    if (port == 0) {
+                        var targetType = AndroidConnectionTarget.Any;
+                        switch ((string)args.android?.connection) {
+                            case "usb":
+                                targetType = AndroidConnectionTarget.Usb;
+                                break;
+                            case "ip":
+                                targetType = AndroidConnectionTarget.Ip;
+                                break;
+                        }
+
+                        var env = ((JObject)args.env)?.ToObject<Dictionary<string, string>>();
+                        var adb = AndroidDebugBridge.GetAndroidDebugBridge(targetType, env);
+
+                        if (adb == null) {
+                            SendOutput("stdout", $"UnityDebug: Could not locate adb. Make sure adb is available via PATH or set ANDROID_SDK_ROOT environment variable.");
+                            this.SendErrorResponse(response, 100, "Could not find adb");
+                            return;
+                        }
+
+                        if (!adb.TryPrepareConnection(out port, out var error)) {
+                            SendOutput("stdout", $"UnityDebug: Could not establish device connection using adb: {error}");
+                            this.SendErrorResponse(response, 101, "Could not connect to unity: {error}", new {
+                                error = error
+                            });
+                            return;
+                        }
+                    }
+                    break;
+            }
+
+            Log.Write($"UnityDebug: Attempting SDB connection to {address}:{port}");
+            SendOutput("stdout", $"UnityDebug: Attempting SDB connection to {address}:{port}");
+
+            IPAddress hostIp;
+            try {
+                // Get first valid IPv4 address
+                hostIp = Dns.GetHostAddresses(address)
+                    .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork)
+                    .FirstOrDefault();
+            }
+            catch (Exception e) {
+                SendOutput("stdout", $"UnityDebug: Could not resolve SDB target address: {e}");
+                return;
+            }
+
+            Connect(hostIp, port);
+            SendResponse(response);
+            return;
+        }
+
+        private bool TryGetEditorDebugPort(string projectRoot, out int port)
+        {
+            SendOutput("stdout", $"UnityDebug: Checking for running editor for project at {projectRoot}");
+            var pidFilePath = Path.Combine(projectRoot, "Library", "EditorInstance.json");
+            port = 0;
+
+            if (!File.Exists(pidFilePath)) {
+                SendOutput("stdout", "UnityDebug: Did not find running instance of Unity Editor for this workspace");
+                return false;
+            }
+
+            var jObject = JObject.Parse(File.ReadAllText(pidFilePath));
+            var pid = (jObject["process_id"].ToObject<int>() % 1000);
+
+            SendOutput("stdout", $"UnityDebug: Found editor with PID {pid}");
+
+            port = 56000 + (pid % 1000);
+
+            return true;
         }
 
         static string CleanPath(string pathToEditorInstanceJson)
