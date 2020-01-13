@@ -326,6 +326,7 @@ namespace UnityDebug
                 case null:
                 case "editor":
                     if (!this.TryGetEditorDebugPort(projectRoot, out port)) {
+                        this.SendErrorResponse(response, 1, "Could not find editor process");
                         return;
                     }
                     break;
@@ -383,9 +384,15 @@ namespace UnityDebug
 
         private bool TryGetEditorDebugPort(string projectRoot, out int port)
         {
+            port = 0;
+
+            if (projectRoot == null) {
+                SendOutput("console", "UnityDebug: 'projectRoot' configuration must be set when attaching to editor");
+                return false;
+            }
+
             SendOutput("stdout", $"UnityDebug: Checking for running editor for project at {projectRoot}");
             var pidFilePath = Path.Combine(projectRoot, "Library", "EditorInstance.json");
-            port = 0;
 
             if (!File.Exists(pidFilePath)) {
                 SendOutput("stdout", "UnityDebug: Did not find running instance of Unity Editor for this workspace");
