@@ -40,12 +40,12 @@ export function deactivate() {
 
 class UnityDebugConfigurationProvider implements DebugConfigurationProvider {
 	resolveDebugConfiguration(folder: WorkspaceFolder | undefined, debugConfiguration: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugConfiguration> {
-        if (debugConfiguration && !debugConfiguration.__exceptionOptions) {
-            debugConfiguration.__exceptionOptions = exceptions.convertToExceptionOptionsDefault();
-        }
-
         if (!debugConfiguration.projectRoot && debugConfiguration.platform) {
             debugConfiguration.projectRoot = "${workspaceFolder}";
+        }
+
+        if (debugConfiguration && !debugConfiguration.__exceptionOptions) {
+            debugConfiguration.__exceptionOptions = exceptions.convertToExceptionOptionsDefault();
         }
 
 		return debugConfiguration;
