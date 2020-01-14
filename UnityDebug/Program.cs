@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.VisualStudio.Shared.VSCodeDebugProtocol;
 using Mono.Debugging.Client;
 using MonoDevelop.Debugger.Soft.Unity;
-using VSCodeDebug;
 
 namespace UnityDebug
 {
@@ -83,9 +83,11 @@ namespace UnityDebug
 		static void RunSession(Stream inputStream, Stream outputStream)
 		{
 			Log.Write("Running session");
-			DebugSession debugSession = new UnityDebugSession();
 			DebuggerLoggingService.CustomLogger = new CustomLogger();
-			debugSession.Start(inputStream, outputStream).Wait();
+			var debugSession = new UnityDebugSession(inputStream, outputStream);
+			debugSession.Run();
+			//debugSession.Start(inputStream, outputStream).Wait();
+
 			Log.Write("Session Terminated");
 		}
 
